@@ -23,25 +23,25 @@ const Home = () => {
         <ChartBox {...chartBoxUser} />
       </div>
       <div className="box box3">
-        {/* <ChartBox {...chartBoxProduct} /> */}
+        <ChartBox {...chartBoxProduct} />
       </div>
       <div className="box box4">
-        {/* <PieChartBox /> */}
+        <PieChartBox />
       </div>
       <div className="box box5">
-        {/* <ChartBox {...chartBoxConversion} /> */}
+        <ChartBox {...chartBoxConversion} />
       </div>
       <div className="box box6">
-        {/* <ChartBox {...chartBoxRevenue} /> */}
+        <ChartBox {...chartBoxRevenue} />
       </div>
       <div className="box box7">
-        {/* <BigChartBox /> */}
+        <BigChartBox />
       </div>
       <div className="box box8">
-        {/* <BarChartBox {...barChartBoxVisit} /> */}
+        <BarChartBox {...barChartBoxVisit} />
       </div>
       <div className="box box9">
-        {/* <BarChartBox {...barChartBoxRevenue} /> */}
+        <BarChartBox {...barChartBoxRevenue} />
       </div>
     </div>
   );

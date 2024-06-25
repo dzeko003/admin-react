@@ -8,9 +8,9 @@
   justify-content: space-between;
 
   h1{
-    @include xxl{
-      font-size: 24px;
-    }
+    // @include xxl{
+    //   font-size: 24px;
+    // }
   }
   .chart{
     width: 100%;
