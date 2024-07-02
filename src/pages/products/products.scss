@@ -1,3 +1,14 @@
 .products{
-    background-color: rgb(28, 186, 20);
+
+  .info{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+
+    button{
+      padding: 5px;
+      cursor: pointer;
+    }
+  }
 }
