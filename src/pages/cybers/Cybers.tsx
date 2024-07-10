@@ -1,46 +1,50 @@
-import { GridColDef } from "@mui/x-data-grid";
-import DataTable from "../../components/dataTable/DataTable";
-import "./Users.scss";
 import { useState } from "react";
+import "./Cybers.scss";
+import DataTable from "../../components/dataTable/DataTable";
 import Add from "../../components/add/Add";
+import { GridColDef } from "@mui/x-data-grid";
 import { useQuery } from "@tanstack/react-query";
-import userAxiosClient from "@api/userApi";
+import cyberAxiosClient from "@api/cyberApi";
 import axios from "axios";
-
-// import { useQuery } from "@tanstack/react-query";
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 90 },
   {
     field: "img",
-    headerName: "Avatar",
+    headerName: "Image",
     width: 100,
     renderCell: (params) => {
       return <img src={params.row.img || "/noavatar.png"} alt="" />;
     },
   },
   {
-    field: "first_name",
+    field: "name",
     type: "string",
-    headerName: "First name",
+    headerName: "Name",
+    width: 250,
+  },
+  {
+    field: "longitude",
+    type: "string",
+    headerName: "Longitude",
     width: 150,
   },
   {
-    field: "last_name",
+    field: "latitude",
     type: "string",
-    headerName: "Last name",
+    headerName: "Latitude",
     width: 150,
   },
   {
-    field: "email",
+    field: "address",
     type: "string",
-    headerName: "Email",
+    headerName: "Address",
     width: 200,
   },
   {
-    field: "phone",
+    field: "printers",
+    headerName: "Printers",
     type: "string",
-    headerName: "Phone",
     width: 200,
   },
   {
@@ -49,36 +53,30 @@ const columns: GridColDef[] = [
     width: 200,
     type: "string",
   },
-  {
-    field: "verified",
-    headerName: "Verified",
-    width: 150,
-    type: "boolean",
-  },
+ 
 ];
 
-const Users = () => {
+const Cybers = () => {
   const [open, setOpen] = useState(false);
 
-  // TEST THE API (Express Js API)
+  // TEST THE API  (Express Js API)
 
   // const { isLoading, data } = useQuery({
-  //   queryKey: ["allusers"],
+  //   queryKey: ["allcybers"],
   //   queryFn: () =>
-  //     fetch("http://localhost:8800/api/users").then(
+  //     fetch("http://localhost:8800/api/cybers").then(
   //       (res) => res.json()
   //     ),
   // });
 
   // Test Laravel Api
-
-  const BASE_URL = `${import.meta.env.VITE_USER_API_BASE_URL}/api`;
+  const BASE_URL = `${import.meta.env.VITE_CYBER_API_BASE_URL}/api`;
 
   const { isLoading, data, error } = useQuery({
-    queryKey: ["allusers"],
+    queryKey: ["allcybers"],
     queryFn: async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/users`);
+        const response = await axios.get(`${BASE_URL}/cybers`);
         return response.data;
       } catch (err) {
         console.error("Error fetching users:", err);
@@ -88,23 +86,22 @@ const Users = () => {
   });
 
   return (
-    <div className="users">
+    <div className="cybers">
       <div className="info">
-        <h1>Users</h1>
-        <button onClick={() => setOpen(true)}>Add New User</button>
+        <h1>Cybers</h1>
+        <button onClick={() => setOpen(true)}>Add New Cyber</button>
       </div>
-
-      {/* TEST THE API */}
+      
+      {/* TEST THE API  */}
 
       {isLoading ? (
         "Loading..."
       ) : (
-        <DataTable slug="users" columns={columns} rows={data} />
+        <DataTable slug="cybers" columns={columns} rows={data} />
       )}
-
-      {open && <Add slug="user" columns={columns} setOpen={setOpen} />}
+      {open && <Add slug="cyber" columns={columns} setOpen={setOpen} />}
     </div>
   );
 };
 
-export default Users;
+export default Cybers;

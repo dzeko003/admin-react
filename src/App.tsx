@@ -13,6 +13,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
+import Cybers from "./pages/cybers/Cybers";
 
 
 const queryClient = new QueryClient();
@@ -61,6 +62,10 @@ function App() {
         {
           path: "/products/:id",
           element: <Product />,
+        },
+        {
+          path: "/cybers",
+          element: <Cybers/>,
         },
       ],
     },

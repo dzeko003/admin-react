@@ -6,6 +6,14 @@ import {
 import "./dataTable.scss";
 import { Link } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import productAxiosClient from "@api/productApi";
+
+import cyberAxiosClient from "@api/cyberApi";
+import { AxiosInstance } from "axios";
+import userAxiosClient from "@api/userApi";
+
+
+
 
 type Props = {
   columns: GridColDef[];
@@ -15,25 +23,27 @@ type Props = {
 
 const DataTable = (props: Props) => {
 
-  // TEST THE API
-
   const queryClient = useQueryClient();
+
+  const getAxiosClient = (slug: string): AxiosInstance => {
+    if (slug === 'products') return productAxiosClient;
+    if (slug === 'users') return userAxiosClient;
+    if (slug === 'cybers') return cyberAxiosClient;
+    throw new Error('Invalid slug');
+};
+  
   const mutation = useMutation({
     mutationFn: (id: number) => {
-      return fetch(`http://localhost:8800/api/${props.slug}/${id}`, {
-        method: "delete",
-      });
+      const axiosClient = getAxiosClient(props.slug);
+      return axiosClient.delete(`/${props.slug}/${id}`);
     },
-    onSuccess: ()=>{
-      // queryClient.invalidateQueries([`all${props.slug}`]);
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`all${props.slug}`] });
     }
-
   });
 
   const handleDelete = (id: number) => {
-    //delete the item
-    mutation.mutate(id)
+    mutation.mutate(id);
   };
 
   const actionColumn: GridColDef = {

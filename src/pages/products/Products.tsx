@@ -3,8 +3,9 @@ import "./Products.scss";
 import DataTable from "../../components/dataTable/DataTable";
 import Add from "../../components/add/Add";
 import { GridColDef } from "@mui/x-data-grid";
-import { products } from "../../data";
 import { useQuery } from "@tanstack/react-query";
+import productAxiosClient from "@api/productApi";
+
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 90 },
@@ -57,14 +58,23 @@ const columns: GridColDef[] = [
 const Products = () => {
   const [open, setOpen] = useState(false);
 
-  // TEST THE API
+  // TEST THE API  (Express Js API)
 
+  // const { isLoading, data } = useQuery({
+  //   queryKey: ["allproducts"],
+  //   queryFn: () =>
+  //     fetch("http://localhost:8800/api/products").then(
+  //       (res) => res.json()
+  //     ),
+  // });
+
+  // Test Laravel Api
+  const axiosClient = productAxiosClient;
   const { isLoading, data } = useQuery({
     queryKey: ["allproducts"],
     queryFn: () =>
-      fetch("http://localhost:8800/api/products").then(
-        (res) => res.json()
-      ),
+      axiosClient.get("/products")
+        .then((res) => res.data),
   });
 
   return (
@@ -73,8 +83,8 @@ const Products = () => {
         <h1>Products</h1>
         <button onClick={() => setOpen(true)}>Add New Products</button>
       </div>
-      {/* <DataTable slug="products" columns={columns} rows={products} /> */}
-      {/* TEST THE API */}
+      
+      {/* TEST THE API  */}
 
       {isLoading ? (
         "Loading..."
