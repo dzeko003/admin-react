@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   DataGrid,
   GridColDef,
@@ -7,12 +8,10 @@ import "./dataTable.scss";
 import { Link } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import productAxiosClient from "@api/productApi";
-
 import cyberAxiosClient from "@api/cyberApi";
 import { AxiosInstance } from "axios";
 import userAxiosClient from "@api/userApi";
-
-
+import Edit from "@components/edit/edit";
 
 
 type Props = {
@@ -22,6 +21,8 @@ type Props = {
 };
 
 const DataTable = (props: Props) => {
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editData, setEditData] = useState<any>(null);
 
   const queryClient = useQueryClient();
 
@@ -30,7 +31,7 @@ const DataTable = (props: Props) => {
     if (slug === 'users') return userAxiosClient;
     if (slug === 'cybers') return cyberAxiosClient;
     throw new Error('Invalid slug');
-};
+  };
   
   const mutation = useMutation({
     mutationFn: (id: number) => {
@@ -46,6 +47,11 @@ const DataTable = (props: Props) => {
     mutation.mutate(id);
   };
 
+  const handleEdit = (data: any) => {
+    setEditData(data);
+    setEditModalOpen(true);
+  };
+
   const actionColumn: GridColDef = {
     field: "action",
     headerName: "Action",
@@ -58,6 +64,9 @@ const DataTable = (props: Props) => {
           </Link>
           <div className="delete" onClick={() => handleDelete(params.row.id)}>
             <img src="/delete.svg" alt="" />
+          </div>
+          <div className="edit" onClick={() => handleEdit(params.row)}>
+            <img src="/edit.svg" alt="" />
           </div>
         </div>
       );
@@ -91,6 +100,14 @@ const DataTable = (props: Props) => {
         disableDensitySelector
         disableColumnSelector
       />
+      {editModalOpen && (
+        <Edit
+          slug={props.slug}
+          columns={props.columns}
+          setOpen={setEditModalOpen}
+          initialValues={editData}
+        />
+      )}
     </div>
   );
 };
