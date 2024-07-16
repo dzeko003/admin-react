@@ -5,14 +5,10 @@ import {
   GridToolbar,
 } from "@mui/x-data-grid";
 import "./dataTable.scss";
-import { Link } from "react-router-dom";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import productAxiosClient from "@api/productApi";
-import cyberAxiosClient from "@api/cyberApi";
-import { AxiosInstance } from "axios";
-import userAxiosClient from "@api/userApi";
+import { Link, useLocation } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import Edit from "@components/edit/edit";
-
+import axios from "axios";
 
 type Props = {
   columns: GridColDef[];
@@ -25,26 +21,37 @@ const DataTable = (props: Props) => {
   const [editData, setEditData] = useState<any>(null);
 
   const queryClient = useQueryClient();
+  const location = useLocation();
 
-  const getAxiosClient = (slug: string): AxiosInstance => {
-    if (slug === 'products') return productAxiosClient;
-    if (slug === 'users') return userAxiosClient;
-    if (slug === 'cybers') return cyberAxiosClient;
-    throw new Error('Invalid slug');
-  };
-  
-  const mutation = useMutation({
-    mutationFn: (id: number) => {
-      const axiosClient = getAxiosClient(props.slug);
-      return axiosClient.delete(`/${props.slug}/${id}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`all${props.slug}`] });
+  let BASE_URL = "";
+  let endpoint = "";
+
+  switch (location.pathname) {
+    case "/cybers":
+      BASE_URL = `${import.meta.env.VITE_CYBER_API_BASE_URL}/api`;
+      endpoint = "cybers";
+      break;
+    case "/users":
+      BASE_URL = `${import.meta.env.VITE_USER_API_BASE_URL}/api`;
+      endpoint = "users";
+      break;
+    default:
+      console.error("Unknown path:", location.pathname);
+      break;
+  }
+
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await fetch(`${BASE_URL}/${endpoint}/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete');
+      }
+      queryClient.invalidateQueries([`${props.slug}s`]);
+    } catch (error) {
+      console.error(error);
     }
-  });
-
-  const handleDelete = (id: number) => {
-    mutation.mutate(id);
   };
 
   const handleEdit = (data: any) => {
@@ -65,7 +72,7 @@ const DataTable = (props: Props) => {
           <div className="delete" onClick={() => handleDelete(params.row.id)}>
             <img src="/delete.svg" alt="" />
           </div>
-          <div className="edit" onClick={() => handleEdit(params.row)}>
+          <div className="delete" onClick={() => handleEdit(params.row)}>
             <img src="/edit.svg" alt="" />
           </div>
         </div>
@@ -106,6 +113,9 @@ const DataTable = (props: Props) => {
           columns={props.columns}
           setOpen={setEditModalOpen}
           initialValues={editData}
+          BASE_URL={BASE_URL}
+          endpoint={endpoint}
+          rowId={editData.id}
         />
       )}
     </div>
