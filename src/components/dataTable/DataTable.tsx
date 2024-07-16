@@ -48,7 +48,7 @@ const DataTable = (props: Props) => {
       if (!response.ok) {
         throw new Error('Failed to delete');
       }
-      queryClient.invalidateQueries([`${props.slug}s`]);
+      queryClient.invalidateQueries([endpoint]);
     } catch (error) {
       console.error(error);
     }

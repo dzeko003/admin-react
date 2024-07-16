@@ -41,14 +41,37 @@ const Edit: React.FC<EditProps> = ({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const updatedData = {
-      name: formValues.name,
-      longitude: parseFloat(formValues.longitude),
-      latitude: parseFloat(formValues.latitude),
-      address: formValues.address,
-      printers: parseInt(formValues.printers, 10),
-      img: formValues.img ? formValues.img : null,
-    };
+    let updatedData = null;
+
+    switch (endpoint) {
+      case "cybers":
+        updatedData = {
+          name: formValues.name,
+          longitude: parseFloat(formValues.longitude),
+          latitude: parseFloat(formValues.latitude),
+          address: formValues.address,
+          printers: parseInt(formValues.printers, 10),
+          img: formValues.img ? formValues.img : null,
+        };
+        break;
+
+      case "users":
+        updatedData = {
+          img: formValues.img ? formValues.img : null,
+          last_name: formValues.last_name,
+          first_name: formValues.first_name,
+          name: formValues.name,
+          email: formValues.email,
+          phone: formValues.phone,
+          verified: formValues.verified,
+        };
+        break;
+      default:
+        console.error("Unknown endpoint:", endpoint);
+        break;
+    }
+
+    console.log("Data :", updatedData);
 
     mutation.mutate(updatedData);
   };
@@ -58,6 +81,7 @@ const Edit: React.FC<EditProps> = ({
       if (!BASE_URL) {
         throw new Error("BASE_URL is not defined properly");
       }
+      console.log("API CONTACT :", `${BASE_URL}/${endpoint}/${rowId}`);
 
       return fetch(`${BASE_URL}/${endpoint}/${rowId}`, {
         method: "PUT",
@@ -68,7 +92,7 @@ const Edit: React.FC<EditProps> = ({
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries([`${slug}s`]);
+      queryClient.invalidateQueries([`${endpoint}`]);
       setOpen(false);
     },
     onError: (error) => {
@@ -87,7 +111,9 @@ const Edit: React.FC<EditProps> = ({
         </span>
         <form onSubmit={handleSubmit}>
           {columns
-            .filter((column) => column.field !== "id" && column.field !== "created_at")
+            .filter(
+              (column) => column.field !== "id" && column.field !== "created_at"
+            )
             .map((column) => (
               <div className="item" key={column.field}>
                 <label>{column.headerName}</label>
@@ -95,7 +121,11 @@ const Edit: React.FC<EditProps> = ({
                   <input
                     type={column.type === "number" ? "number" : "text"}
                     name={column.field}
-                    value={formValues[column.field] !== undefined ? String(formValues[column.field]) : ""}
+                    value={
+                      formValues[column.field] !== undefined
+                        ? String(formValues[column.field])
+                        : ""
+                    }
                     onChange={handleChange}
                   />
                 ) : (
