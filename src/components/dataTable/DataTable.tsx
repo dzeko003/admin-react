@@ -8,7 +8,8 @@ import "./dataTable.scss";
 import { Link, useLocation } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import Edit from "@components/edit/edit";
-import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 type Props = {
   columns: GridColDef[];
@@ -42,6 +43,9 @@ const DataTable = (props: Props) => {
 
   const handleDelete = async (id: number) => {
     try {
+      const confirmed = window.confirm("Are you sure you want to delete this item?");
+      if (!confirmed) return;
+
       const response = await fetch(`${BASE_URL}/${endpoint}/${id}`, {
         method: "DELETE",
       });
@@ -49,6 +53,7 @@ const DataTable = (props: Props) => {
         throw new Error('Failed to delete');
       }
       queryClient.invalidateQueries([endpoint]);
+      toast.success("Item deleted successfully!"); // Notification de succès
     } catch (error) {
       console.error(error);
     }
@@ -67,13 +72,13 @@ const DataTable = (props: Props) => {
       return (
         <div className="action">
           <Link to={`/${props.slug}/${params.row.id}`}>
-            <img src="/view.svg" alt="" />
+            <img src="/view.svg" alt="View" />
           </Link>
           <div className="delete" onClick={() => handleDelete(params.row.id)}>
-            <img src="/delete.svg" alt="" />
+            <img src="/delete.svg" alt="Delete" />
           </div>
           <div className="delete" onClick={() => handleEdit(params.row)}>
-            <img src="/edit.svg" alt="" />
+            <img src="/edit.svg" alt="Edit" />
           </div>
         </div>
       );

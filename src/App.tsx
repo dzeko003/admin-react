@@ -14,6 +14,8 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query";
 import Cybers from "./pages/cybers/Cybers";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
 const queryClient = new QueryClient();
@@ -34,6 +36,7 @@ function App() {
           </div>
         </div>
         <Footer />
+        <ToastContainer />
       </div>
     );
   };
