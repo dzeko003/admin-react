@@ -112,7 +112,7 @@ const Edit: React.FC<EditProps> = ({
         <form onSubmit={handleSubmit}>
           {columns
             .filter(
-              (column) => column.field !== "id" && column.field !== "created_at"
+              (column) => column.field !== "id" && column.field !== "created_at" && column.field !== "img"
             )
             .map((column) => (
               <div className="item" key={column.field}>
