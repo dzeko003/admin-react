@@ -53,6 +53,10 @@ const DataTable = (props: Props) => {
         throw new Error('Failed to delete');
       }
       queryClient.invalidateQueries([endpoint]);
+      // queryClient.invalidateQueries({
+      //   queryKey: [endpoint],
+      // });
+      
       toast.success("Item deleted successfully!"); // Notification de succès
     } catch (error) {
       console.error(error);

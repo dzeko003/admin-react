@@ -92,6 +92,10 @@ const Edit: React.FC<EditProps> = ({
       });
     },
     onSuccess: () => {
+      // queryClient.invalidateQueries({
+      //   queryKey: [`${endpoint}`],
+      // });
+      
       queryClient.invalidateQueries([`${endpoint}`]);
       setOpen(false);
     },
